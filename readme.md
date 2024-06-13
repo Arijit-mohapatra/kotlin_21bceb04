@@ -1,98 +1,212 @@
-# Assignment 1
+# Assignment 2
 
-
-### 1. Print the Pattern
+### 1. Function Overloading
 
 ```kotlin
-fun printPattern(n: Int) {
-    for (i in 1..n) {
-        for (j in 1..i) {
-            print("* ")
-        }
-        println()
-    }
+fun calculateArea(length: Double, breadth: Double): Double {
+    return length * breadth
+}
+
+fun calculateArea(radius: Double): Double {
+    return Math.PI * radius * radius
 }
 
 fun main() {
-    val n = 5
-    printPattern(n)
+    val rectangleArea = calculateArea(5.0, 3.0)
+    val circleArea = calculateArea(4.0)
+    println("Area of rectangle: $rectangleArea")
+    println("Area of circle: $circleArea")
 }
 ```
 
-### 2. Check if the Number is an Armstrong Number or Not
+### 2. Higher-Order Functions
 
 ```kotlin
-fun isArmstrongNumber(number: Int): Boolean {
-    val digits = number.toString().map { it.toString().toInt() }
-    val sum = digits.map { it * it * it }.sum()
-    return sum == number
+fun operation(a: Int, b: Int, func: (Int, Int) -> Int): Int {
+    return func(a, b)
+}
+
+fun add(a: Int, b: Int): Int {
+    return a + b
 }
 
 fun main() {
-    val number = 153
-    if (isArmstrongNumber(number)) {
-        println("$number is an Armstrong number")
+    val result = operation(5, 3, ::add)
+    println("Result of operation: $result")
+}
+```
+
+### 3. Extension Functions
+
+```kotlin
+fun String.isPalindrome(): Boolean {
+    return this == this.reversed()
+}
+
+fun main() {
+    val str = "madam"
+    if (str.isPalindrome()) {
+        println("$str is a palindrome")
     } else {
-        println("$number is not an Armstrong number")
+        println("$str is not a palindrome")
     }
 }
 ```
 
-### 3. Find the GCD of Two Numbers Using the Euclidean Method
+### 4. Recursive Functions
 
 ```kotlin
-fun gcd(a: Int, b: Int): Int {
-    if (b == 0) {
-        return a
+fun factorial(n: Long, accumulator: Long = 1): Long {
+    return if (n <= 1) {
+        accumulator
+    } else {
+        factorial(n - 1, n * accumulator)
     }
-    return gcd(b, a % b)
 }
 
 fun main() {
-    val num1 = 56
-    val num2 = 98
-    println("GCD of $num1 and $num2 is ${gcd(num1, num2)}")
+    val num = 20L
+    println("Factorial of $num is ${factorial(num)}")
 }
 ```
 
-### 4. Find the Frequency of Letters in a String
+### Advanced Programming Questions on Classes
+
+### 1. Inheritance and Polymorphism
 
 ```kotlin
-fun frequencyOfLetters(str: String): Map<Char, Int> {
-    val frequencyMap = mutableMapOf<Char, Int>()
-    for (char in str) {
-        if (char.isLetter()) {
-            frequencyMap[char] = frequencyMap.getOrDefault(char, 0) + 1
+abstract class Shape {
+    abstract fun area(): Double
+}
+
+class Rectangle(val length: Double, val breadth: Double) : Shape() {
+    override fun area(): Double {
+        return length * breadth
+    }
+
+    fun perimeter(): Double {
+        return 2 * (length + breadth)
+    }
+}
+
+class Circle(val radius: Double) : Shape() {
+    override fun area(): Double {
+        return Math.PI * radius * radius
+    }
+
+    fun perimeter(): Double {
+        return 2 * Math.PI * radius
+    }
+}
+
+fun main() {
+    val shapes: List<Shape> = listOf(Rectangle(5.0, 3.0), Circle(4.0))
+    for (shape in shapes) {
+        println("Area: ${shape.area()}")
+        if (shape is Rectangle) {
+            println("Perimeter: ${shape.perimeter()}")
+        } else if (shape is Circle) {
+            println("Perimeter: ${shape.perimeter()}")
         }
     }
-    return frequencyMap
-}
-
-fun main() {
-    val str = "Hello World"
-    val frequencyMap = frequencyOfLetters(str)
-    for ((char, freq) in frequencyMap) {
-        println("$char: $freq")
-    }
 }
 ```
 
-### 5. Check if a Number is a Duck Number or Not
+### 2. Data Classes and Copy Function
 
 ```kotlin
-fun isDuckNumber(number: String): Boolean {
-    if (number[0] == '0') {
-        return false
+data class Person(val name: String, val age: Int, val address: String)
+
+fun main() {
+    val person1 = Person("John", 30, "123 Street")
+    val person2 = person1.copy(age = 31, address = "456 Avenue")
+    println("Person1: $person1")
+    println("Person2: $person2")
+}
+```
+
+### 3. Companion Objects and Factory Methods
+
+```kotlin
+class User(val name: String, val age: Int) {
+    companion object {
+        fun createDefaultUser(): User {
+            return User("Default", 0)
+        }
+
+        fun createUser(name: String = "Default", age: Int = 0): User {
+            return User(name, age)
+        }
     }
-    return '0' in number
 }
 
 fun main() {
-    val number = "1023"
-    if (isDuckNumber(number)) {
-        println("$number is a Duck number")
-    } else {
-        println("$number is not a Duck number")
+    val user1 = User.createDefaultUser()
+    val user2 = User.createUser("Alice", 25)
+    val user3 = User.createUser(age = 30)
+    println("User1: ${user1.name}, Age: ${user1.age}")
+    println("User2: ${user2.name}, Age: ${user2.age}")
+    println("User3: ${user3.name}, Age: ${user3.age}")
+}
+```
+
+### 4. Interface Implementation
+
+```kotlin
+interface Drawable {
+    fun draw()
+    fun resize()
+}
+
+class Square(val side: Double) : Drawable {
+    override fun draw() {
+        println("Drawing a square with side $side")
     }
+
+    override fun resize() {
+        println("Resizing the square")
+    }
+}
+
+class Triangle(val base: Double, val height: Double) : Drawable {
+    override fun draw() {
+        println("Drawing a triangle with base $base and height $height")
+    }
+
+    override fun resize() {
+        println("Resizing the triangle")
+    }
+}
+
+fun main() {
+    val square: Drawable = Square(4.0)
+    val triangle: Drawable = Triangle(3.0, 5.0)
+    square.draw()
+    square.resize()
+    triangle.draw()
+    triangle.resize()
+}
+```
+
+### 5. Singleton Pattern
+
+```kotlin
+object DatabaseConnection {
+    init {
+        println("Initializing DatabaseConnection")
+    }
+
+    fun connect() {
+        println("Connecting to the database")
+    }
+
+    fun disconnect() {
+        println("Disconnecting from the database")
+    }
+}
+
+fun main() {
+    DatabaseConnection.connect()
+    DatabaseConnection.disconnect()
 }
 ```
